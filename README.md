@@ -6,7 +6,7 @@ approach. However approach taken here will be,
 modelling the problem as a state exploration by 
 agent, using abstraction.    
 
-###Solution 
+### Solution 
 
 #### Solving Infinite loop: keep a track of visited states 
 The given program runs into infinite loop when no 
