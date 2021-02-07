@@ -73,15 +73,16 @@ def is_goal(board, k):
 # - success is True if a solution was found, and False otherwise.
 #
 def solve(initial_board, k):
-    initial_state = (initial_board, count_pichus(initial_board))
-    fringe = PriorityQueue()
-    fringe.put(initial_state, 1/initial_state[1])
-    while not fringe.empty():
-        (board, pichus_count) = fringe.get()
+    count = 1
+    fringe = [(initial_board, count_pichus(initial_board))]
+    while len(fringe) > 0:
+        (board, pichus_count) = fringe.pop()
         for s in successors( board ):
+            count = count + 1
             if pichus_count + 1 == k:
+                print(count)
                 return(s,True)
-            fringe.put((s, pichus_count + 1), 1/(pichus_count+1))
+            fringe.append((s, pichus_count + 1))
     return ([],False)
 
 # Main Function
