@@ -12,7 +12,7 @@ agent, using abstraction.
 The given program runs into infinite loop when no 
 solution exists. This is because the edges are
 steps are bi-directional. So when the agent reaches
-a dead end, it starts ~~flying~~ walking back,
+a dead end, it starts walking back,
 still searching for target.
 
 To solve this problem, we need to keep a record of
