@@ -33,10 +33,15 @@ def printable_board(board):
 def add_pichu(board, row, col):
     return board[0:row] + [board[row][0:col] + ['p',] + board[row][col+1:]] + board[row+1:]
 
+def add_pichu_q(board, row, col):
+    return (board[0:row] + [board[row][0:col] + ['q',] + board[row][col+1:]] + board[row+1:], row)
+
 def is_pichus_hidden_on_board(board, row, col):
     return is_pichus_hidden_in_line([row[col] for row in board], row) and is_pichus_hidden_in_line(board[row][:], col)
 
 def is_pichus_hidden_on_board2(board, row, col):
+    if row == 0 and col == 2:
+        print("Debug")
     hidden = is_pichus_hidden_in_line([row[col] for row in board], row) and is_pichus_hidden_in_line(board[row][:], col)
     if not hidden:
         return False
@@ -63,7 +68,7 @@ def get_diagonals_with_pivot(board, row, col):
 def is_pichus_hidden_in_line(line, index):
     i = index - 1
     while(i >= 0):
-        if line[i] == 'p':
+        if line[i] in 'pq':
             return False
         if line[i] in '@X':
             break
@@ -72,7 +77,7 @@ def is_pichus_hidden_in_line(line, index):
     i = index + 1
 
     while(i < len(line)):
-        if line[i] == 'p':
+        if line[i] in 'pq':
             return False
         if line[i] in '@X':
             return True
@@ -81,16 +86,19 @@ def is_pichus_hidden_in_line(line, index):
     return True
 
 # Get list of successors of given board state
-def successors(board):
-    return [ add_pichu(board, r, c) for r in range(0, len(board)) for c in range(0,len(board[0])) if board[r][c] == '.' and is_pichus_hidden_on_board(board, r, c) ]
+def successors(board, max_pichus_row):
+    return [ add_pichu_q(board, r, c) for r in range(max(max_pichus_row, 0), len(board)) for c in range(0,len(board[0])) if board[r][c] == '.' and is_pichus_hidden_on_board(board, r, c) ]
 
 # get successors for diagonally impacted agents
-def successors_diagonal(board):
-    return [ add_pichu(board, r, c) for r in range(0, len(board)) for c in range(0,len(board[0])) if board[r][c] == '.' and is_pichus_hidden_on_board2(board, r, c) ]
+def successors_diagonal(board, max_pichus_row):
+    return [ add_pichu_q(board, r, c) for r in range(max(max_pichus_row, 0), len(board)) for c in range(0,len(board[0])) if board[r][c] == '.' and is_pichus_hidden_on_board2(board, r, c) ]
 
 # check if board is a goal state
 def is_goal(board, k):
-    return count_pichus(board) == k 
+    return count_pichus(board) == k
+
+def get_highest_pichus_row(board):
+    return max([i for i, row in enumerate(board) for col in row if col == 'q'] + [-1])
 
 from queue import SimpleQueue, PriorityQueue, LifoQueue
 
@@ -126,6 +134,10 @@ def insert_in_fringe(fringe, item, algo):
             priority = 1 / item[1]
         fringe.put((StateObject(item, priority)))
 
+def replace_q_p(board):
+    for i,j in [(r,c) for r in range(len(board)) for c in range(len(board[0])) if board[r][c] == 'q']:
+        board[i][j] = 'p'
+
 def get_fringe_item(fringe, algo):
     if algo in ("list_stack", "list_queue"):
         return fringe.pop()
@@ -151,21 +163,23 @@ def solve_diagonal(initial_board):
     total_insert_time = 0
     algo_start_time = time.process_time()
 
-    algo = "list_queue"
+    algo = "pq_dfs"
 
     fringe = get_fringe(algo)
 
+    max_pichus_row = get_highest_pichus_row(initial_board)
+
     if algo != "list_queue":
-        insert_in_fringe(fringe, (initial_board, count_pichus(initial_board)), algo)
+        insert_in_fringe(fringe, (initial_board, count_pichus(initial_board), max_pichus_row), algo)
     else:
-        fringe = [(initial_board, count_pichus(initial_board))]
+        fringe = [(initial_board, count_pichus(initial_board), max_pichus_row)]
 
     while not is_fringe_empty(fringe, algo):
 
-        (board, pichus_count) = get_fringe_item(fringe, algo)
+        (board, pichus_count, max_pichus_row) = get_fringe_item(fringe, algo)
         fringe_size = fringe_size - 1
 
-        for s in successors_diagonal(board):
+        for (s, max_pichus_row) in successors_diagonal(board, max_pichus_row):
             state_count = state_count + 1
             fringe_size = fringe_size + 1
             if fringe_size > max_fringe_size:
@@ -175,7 +189,7 @@ def solve_diagonal(initial_board):
                 max_pichus_board = s
                 max_pichus = pichus_count + 1
 
-            item = (s, pichus_count + 1)
+            item = (s, pichus_count + 1, max_pichus_row)
 
             start_time = time.process_time()
             if algo != "list_queue":
@@ -197,6 +211,7 @@ def solve_diagonal(initial_board):
     print("avg time in fringe inserts: " + str(total_insert_time / state_count))
     print("Total time taken by algo: " + str(time.process_time() - algo_start_time))
 
+    replace_q_p(max_pichus_board)
     return (max_pichus_board,True)
 
 # Arrange agents on the map
@@ -216,21 +231,22 @@ def solve(initial_board, k):
     total_insert_time = 0
     algo_start_time = time.process_time()
 
-    algo = "list_stack"
-    fringe = get_fringe(algo)
-
     solution = None
 
+    algo = "list_stack"
+    fringe = get_fringe(algo)
+    max_pichus_row = get_highest_pichus_row(initial_board)
+
     if algo != "list_queue":
-        insert_in_fringe(fringe, (initial_board, count_pichus(initial_board)), algo)
+        insert_in_fringe(fringe, (initial_board, count_pichus(initial_board), max_pichus_row), algo)
     else:
-        fringe = [(initial_board, count_pichus(initial_board))]
+        fringe = [(initial_board, count_pichus(initial_board), max_pichus_row)]
 
     while not is_fringe_empty(fringe, algo):
-        (board, pichus_count) = get_fringe_item(fringe, algo)
+        (board, pichus_count, max_pichus_row) = get_fringe_item(fringe, algo)
         fringe_size = fringe_size - 1
 
-        for s in successors_diagonal( board ):
+        for (s, max_pichus_row) in successors( board, max_pichus_row ):
             state_count = state_count + 1
             if pichus_count + 1 == k:
                 solution = (s,True)
@@ -243,9 +259,9 @@ def solve(initial_board, k):
             start_time = time.process_time()
 
             if algo != "list_queue":
-                insert_in_fringe(fringe, ((s, pichus_count + 1)), algo)
+                insert_in_fringe(fringe, ((s, pichus_count + 1, max_pichus_row)), algo)
             else:
-                fringe = [(s, pichus_count + 1)] + fringe
+                fringe = [(s, pichus_count + 1, max_pichus_row)] + fringe
 
             if state_count % 1000 == 0:
                 print("Avg time: " + str(total_insert_time / state_count))
@@ -265,6 +281,7 @@ def solve(initial_board, k):
     print("Total time taken by algo: " + str(time.process_time() - algo_start_time))
 
     if solution is not None:
+        replace_q_p(solution[0])
         return solution
 
     return ([],False)
