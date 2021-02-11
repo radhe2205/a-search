@@ -1,0 +1,25 @@
+Problem #,Algorithm,#States explored,Max Fringe size,total time taken in fringe inserts,avg time taken in fringe inserts,Total algo time
+Part 2 map0,list with stack,75272,77,0.375,0.0000049819,12.765625
+Part 2 map0,list with queue,-,-,-,-,-
+Part 2 map0,queue,4221561,2686320,26.609375,0.000006303,339.90625
+Part 2 map0,PQ with most p,85,77,0,0,0
+,,,,,,
+Part 2 map2,list with stack,42389,72,0.359375,0.000008478,7.40625
+Part 2 map2,list with queue,-,-,-,-,-
+Part 2 map2,queue,2372695,1431504,16.671875,0.0000070265,205.71
+Part 2 map2,PQ with most p,81,73,0,0,0
+,,,,,,
+Part 2 map0-extra,list with stack,130852,58,0.515625,0.00000394052,31.40625
+Part 2 map0-extra,list with queue,130852,61200,121.859375,0.0009312763657,156.828125
+Part 2 map0-extra,queue,130852,61200,0.71875,0.000005492,32.140625
+Part 2 map0-extra,PQ with most p,130852,61,2.9375,0.000022449,37.609375
+,,,,,,
+Part 2 map2-extra,list with stack,27364,52,0.171875,0.000006281,7.125
+Part 2 map2-extra,list with queue,27364,12600,3.125,0.0001142011402,10.40625
+Part 2 map2-extra,queue,27364,12600,0.0625,0.000002284,5.4375
+Part 2 map2-extra,PQ with most p,27364,50,0.78125,0.0000285502,8.375
+,,,,,,
+nQueen,list with stack,26093,153,0.078125,0.000002994,17.1875
+nQueen,list with queue,-,-,-,-,-
+nQueen,queue,-,-,-,-,-
+nQueen,PQ with most p,65678,153,1.8125,0.000027596,47.203125

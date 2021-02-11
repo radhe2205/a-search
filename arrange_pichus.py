@@ -163,7 +163,7 @@ def solve_diagonal(initial_board):
     total_insert_time = 0
     algo_start_time = time.process_time()
 
-    algo = "pq_dfs"
+    algo = "list_stack"
 
     fringe = get_fringe(algo)
 
@@ -233,7 +233,7 @@ def solve(initial_board, k):
 
     solution = None
 
-    algo = "list_stack"
+    algo = "pq_dfs"
     fringe = get_fringe(algo)
     max_pichus_row = get_highest_pichus_row(initial_board)
 
