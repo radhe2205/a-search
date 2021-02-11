@@ -100,7 +100,7 @@ def is_goal(board, k):
 def get_highest_pichus_row(board):
     return max([i for i, row in enumerate(board) for col in row if col == 'q'] + [-1])
 
-from queue import SimpleQueue, PriorityQueue, LifoQueue
+from queue import Queue, PriorityQueue, LifoQueue
 
 
 class StateObject:
@@ -116,7 +116,7 @@ def get_fringe(algo):
     if algo in ("pq_dfs"):
         return PriorityQueue()
     if algo == "queue":
-        return SimpleQueue()
+        return Queue()
     if algo == "lifo_q_stack":
         return LifoQueue()
 

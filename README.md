@@ -122,7 +122,7 @@ To validate the hypothesis regarding choice of data structure, I used following 
 * list with queue operations (provided)
 * list with stack operations (instead of appending, adding to the front of list)
 * PriorityQueue with most #p
-* SimpleQueue
+* Queue
 
 Following observations were captured.
 1) List with queue operations became very slow deep into exploration. On analysing it was found that
@@ -130,8 +130,8 @@ list with queue operations using -> `a = [node] + a`, is creating another
    similar list, and is not reusing the same list. Which is causing huge delays in 
    insertions. Moreover, the fringe size is also high because of BFS algorithm.
    This caused even higher delays in insertions, because of cloning of orignal fringe everytime.
-2) SimpleQueue was used to compare the results with _list with queue_. So _list with queue_ was compared
-   with SimpleQueue. _list with queue_ performed much faster than _SimpleQueue_. As pointed
+2) Queue was used to compare the results with _list with queue_. So _list with queue_ was compared
+   with Queue. _list with queue_ performed much faster than _Queue_. As pointed
    out earlier _list with queue_ suffered heavy delay in insertions so it was slow.
 3) **[IMP]** PriorityQueue with most #p being the highest priority was also tested. On implementation
 it was found that PriorityQueue with most #p is very similar to DFS algorithm.

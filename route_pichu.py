@@ -11,7 +11,7 @@ import sys
 import json
 
 # Parse the map from a given filename
-from queue import LifoQueue, SimpleQueue
+from queue import LifoQueue, Queue
 
 
 def parse_map(filename):
@@ -59,8 +59,8 @@ def get_actual_path_in_two_way_search(current_path, visited_path, is_forward_sea
 #    (for up, left, right, and down)
 #
 def search(house_map):
-    forward_fringe = SimpleQueue()
-    reverse_fringe = SimpleQueue()
+    forward_fringe = Queue()
+    reverse_fringe = Queue()
 
     forward_search = True
     visited_cells = {}
@@ -76,7 +76,7 @@ def search(house_map):
 
     while not forward_fringe.empty() and not reverse_fringe.empty():
         old_fringe = forward_fringe if forward_search else reverse_fringe
-        new_fringe = SimpleQueue()
+        new_fringe = Queue()
 
         while not old_fringe.empty():
             (curr_move, curr_dist, path) = old_fringe.get()
