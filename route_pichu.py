@@ -38,11 +38,8 @@ def moves(map, row, col):
     return [move for move in moves if valid_index(move, len(map), len(map[0])) and (map[move[0]][move[1]] in ".@p")]
 
 def get_reverse_path(path):
-    reverse_path = ""
     reverse_key_map = {'D': 'U', 'U':'D', 'R':'L','L':'R'}
-    for char in path[::-1]:
-        reverse_path = reverse_path + reverse_key_map[char]
-    return reverse_path
+    return ''.join([reverse_key_map[char] for char in path[::-1]])
 
 def get_actual_path_in_two_way_search(current_path, visited_path, is_forward_search):
     current_path = current_path if is_forward_search else get_reverse_path(current_path)
