@@ -10,11 +10,6 @@
 
 import sys
 import time
-#
-# class StateObject:
-#     col, row = -1
-#     board = [[]]
-
 
 # Parse the map from a given filename
 def parse_map(filename):
@@ -171,12 +166,6 @@ def solve_diagonal(initial_board):
     max_pichus = count_pichus(initial_board)
     max_pichus_board = initial_board
 
-    state_count = 1
-    max_fringe_size = 1
-    fringe_size = 1
-    total_insert_time = 0
-    algo_start_time = time.process_time()
-
     algo = "list_stack"
 
     fringe = get_fringe(algo)
@@ -188,38 +177,15 @@ def solve_diagonal(initial_board):
     while not is_fringe_empty(fringe, algo):
 
         (board, pichus_count, max_pichus_pos) = get_fringe_item(fringe, algo)
-        fringe_size = fringe_size - 1
 
         for (s, max_pichus_pos) in successors_diagonal(board, max_pichus_pos):
-            state_count = state_count + 1
-            fringe_size = fringe_size + 1
-            if fringe_size > max_fringe_size:
-                max_fringe_size = fringe_size
-
             if pichus_count + 1 > max_pichus:
                 max_pichus_board = s
                 max_pichus = pichus_count + 1
 
             item = (s, pichus_count + 1, max_pichus_pos)
 
-            start_time = time.process_time()
-
             fringe = insert_in_fringe(fringe, item, algo)
-
-            total_insert_time = total_insert_time + (time.process_time() - start_time)
-
-            if state_count % 1000 == 0:
-                print("Avg time: " + str(total_insert_time / state_count))
-                print("States count: " + str(state_count))
-                print("max fringe size: " + str(max_fringe_size))
-                print("pichus_count: " + str(pichus_count + 1))
-
-    print("Algo: " + algo)
-    print("States explored: " + str(state_count))
-    print("Max Fringe size: " + str(max_fringe_size))
-    print("total time in insert ops: " + str(total_insert_time))
-    print("avg time in fringe inserts: " + str(total_insert_time / state_count))
-    print("Total time taken by algo: " + str(time.process_time() - algo_start_time))
 
     replace_q_p(max_pichus_board)
     return (max_pichus_board,True)
@@ -235,12 +201,6 @@ def solve(initial_board, k):
     if k == 0:
         return solve_diagonal(initial_board)
 
-    state_count = 1
-    max_fringe_size = 1
-    fringe_size = 1
-    total_insert_time = 0
-    algo_start_time = time.process_time()
-
     solution = None
 
     algo = "pq_dfs"
@@ -251,37 +211,15 @@ def solve(initial_board, k):
 
     while not is_fringe_empty(fringe, algo):
         (board, pichus_count, max_pichus_pos) = get_fringe_item(fringe, algo)
-        fringe_size = fringe_size - 1
         for (s, max_pichus_pos) in successors( board, max_pichus_pos ):
-            state_count = state_count + 1
             if pichus_count + 1 == k:
                 solution = (s,True)
                 break
 
-            fringe_size = fringe_size + 1
-            if max_fringe_size < fringe_size:
-                max_fringe_size = fringe_size
-
-            start_time = time.process_time()
-
             fringe = insert_in_fringe(fringe, ((s, pichus_count + 1, max_pichus_pos)), algo)
 
-            if state_count % 1000 == 0:
-                print("Avg time: " + str(total_insert_time / state_count))
-                print("States count: " + str(state_count))
-                print("max fringe size: " + str(max_fringe_size))
-                print("pichus_count: " + str(pichus_count + 1))
-
-            total_insert_time = total_insert_time + (time.process_time() - start_time)
         if solution is not None:
             break
-
-    print("Algo: " + algo)
-    print("States explored: " + str(state_count))
-    print("Max Fringe size: " + str(max_fringe_size))
-    print("total time in insert ops: " + str(total_insert_time))
-    print("avg time in fringe inserts: " + str(total_insert_time/state_count))
-    print("Total time taken by algo: " + str(time.process_time() - algo_start_time))
 
     if solution is not None:
         replace_q_p(solution[0])
