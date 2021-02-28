@@ -1,15 +1,9 @@
-# YOU SHOULD NOT MODIFY THIS FILE
-# 
-# a0_test.py version 2021.01.28
-#
-# Zoher Kachwala, based on code by Jagpreet Chawla
-#
-
 #importing student's scripts
 import route_pichu
 import arrange_pichus
 from itertools import groupby
 import re
+import os
 import pytest
 
 def navigate(mapX,moves):
@@ -74,12 +68,13 @@ def check_solution1(mapX,dist_key):
 	#function to search
 	dist,moves=route_pichu.search(mapX)
 	assert type(dist)==int,"Distance is not an integer"
-	assert regex_moves.match(moves),"Moves contain invalid characters"
 	assert dist==dist_key,"Wrong solution"
-	assert dist==len(moves),"Distance and path length are not equal"
-	assert navigate(mapX,moves)==True,"Path did not reach the goal"
+	if dist>-1:
+		assert regex_moves.match(moves),"Moves contain invalid characters"
+		assert dist==len(moves),"Distance and path length are not equal"
+		assert navigate(mapX,moves)==True,"Path did not reach the goal"
 
-#Part 2 needs to return the 2d_list: map,bool: if_solution_exists
+#Part 2 needs tor return the 2d_list: map,bool: if_solution_exists
 def check_solution2(mapX,sol_exist_key,n):
 	solved_map,sol_exist=arrange_pichus.solve(mapX,n)
 	import numpy as np
@@ -98,39 +93,88 @@ def check_solution2(mapX,sol_exist_key,n):
 
 def load_maps():
 	maps=[]
-	for name in ['map.txt','map2.txt']:
+	for name in ['map.txt','map2.txt','map3.txt','map4.txt','map5.txt','map6.txt']:
 		with open(name,"r") as file:
-			mapX=[list(line) for line in file.read().splitlines()]
-		with open(name + '.solution.txt',"r") as file:
 			lines=file.read().splitlines()
 			dist=int(lines[0])
 			sol_exist=bool(lines[1])
 			n=int(lines[2])
+			mapX=[list(line) for line in lines[3:]]
 			maps.append((mapX,dist,sol_exist,n))
 	return maps
 
-@pytest.mark.timeout(30)
+
+time_ = 900
+
+@pytest.mark.timeout(time_)
 def test_question1_case1():
 	maps=load_maps()
 	mapX,dist_key,_,_=maps[0]
 	check_solution1(mapX,dist_key)
 
-@pytest.mark.timeout(30)
+@pytest.mark.timeout(time_)
 def test_question2_case1():
 	maps=load_maps()
 	mapX,_,sol_exist_key,n=maps[0]
 	check_solution2(mapX,sol_exist_key,n)
 
-@pytest.mark.timeout(30)
+@pytest.mark.timeout(time_)
 def test_question1_case2():
 	maps=load_maps()
 	mapX,dist_key,_,_=maps[1]
 	check_solution1(mapX,dist_key)
 
-@pytest.mark.timeout(30)
+@pytest.mark.timeout(time_)
 def test_question2_case2():
 	maps=load_maps()
 	mapX,_,sol_exist_key,n=maps[1]
 	check_solution2(mapX,sol_exist_key,n)
 
+@pytest.mark.timeout(time_)
+def test_question1_case3():
+        maps=load_maps()
+        mapX,dist_key,_,_=maps[2]
+        check_solution1(mapX,dist_key)
+
+@pytest.mark.timeout(time_)
+def test_question2_case3():
+        maps=load_maps()
+        mapX,_,sol_exist_key,n=maps[2]
+        check_solution2(mapX,sol_exist_key,n)
+
+@pytest.mark.timeout(time_)
+def test_question1_case4():
+        maps=load_maps()
+        mapX,dist_key,_,_=maps[3]
+        check_solution1(mapX,dist_key)
+
+@pytest.mark.timeout(time_)
+def test_question2_case4():
+        maps=load_maps()
+        mapX,_,sol_exist_key,n=maps[3]
+        check_solution2(mapX,sol_exist_key,n)
+
+@pytest.mark.timeout(time_)
+def test_question1_case5():
+        maps=load_maps()
+        mapX,dist_key,_,_=maps[4]
+        check_solution1(mapX,dist_key)
+
+@pytest.mark.timeout(time_)
+def test_question2_case5():
+        maps=load_maps()
+        mapX,_,sol_exist_key,n=maps[4]
+        check_solution2(mapX,sol_exist_key,n)
+
+@pytest.mark.timeout(time_)
+def test_question1_case6():
+        maps=load_maps()
+        mapX,dist_key,_,_=maps[5]
+        check_solution1(mapX,dist_key)
+
+@pytest.mark.timeout(time_)
+def test_question2_case6():
+        maps=load_maps()
+        mapX,_,sol_exist_key,n=maps[5]
+        check_solution2(mapX,sol_exist_key,n)
 
